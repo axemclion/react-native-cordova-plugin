@@ -1,15 +1,18 @@
 {
   "name": "react-native-cordova-plugins",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Cordova Plugin Adapter for React Native ",
   "main": "index.js",
   "dependencies": {
-    "cordova-android": "^4.1.1"
+    "cordova-android": "^4.1.1",
+    "cordova-lib": "^5.3.3",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "npm": "^3.3.6",
+    "q": "^1.4.1",
+    "rimraf": "^2.4.3"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Parashuram <code@nparashuram.com>",
   "license": "ISC",
   "repository": {

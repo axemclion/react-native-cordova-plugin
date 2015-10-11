@@ -11,6 +11,9 @@ local.properties
 
 # Gradle generated files
 .gradle/
+framework/android/gradle
+framework/android/gradlew
+framework/android/gradlew.bat
 
 # Signing files
 .signing/

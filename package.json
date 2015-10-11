@@ -6,6 +6,7 @@
   "dependencies": {
     "cordova-android": "^4.1.1",
     "cordova-lib": "^5.3.3",
+    "debug": "^2.2.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "npm": "^3.3.6",

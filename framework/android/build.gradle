@@ -13,9 +13,9 @@ android {
 
     sourceSets{
         main{
-           manifest.srcFile '../../plugins/android/AndroidManifest.xml'
-           java.srcDirs = ['../../node_modules/cordova-android/framework/src', '../../plugins/android/src', 'src/main/java']
-            res.srcDirs = ['../../plugins/android/res']
+           manifest.srcFile '../../platforms/android/AndroidManifest.xml'
+           java.srcDirs = ['../../node_modules/cordova-android/framework/src', '../../platforms/android/src', 'src/main/java']
+            res.srcDirs = ['../../platforms/android/res']
         }
     }
 }

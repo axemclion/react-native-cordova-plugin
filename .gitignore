@@ -1,6 +1,6 @@
 ## Project Specifi Files ###
 framework/android/build
-plugins/
+platforms/
 
 ### Android ###
 # Built application files

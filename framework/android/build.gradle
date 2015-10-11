@@ -13,7 +13,7 @@ android {
 
     sourceSets{
         main{
-           java.srcDirs = ['../node_modules/cordova-android/framework/src', '../plugins/android/src', 'src/main/java']
+           java.srcDirs = ['../../node_modules/cordova-android/framework/src', '../../plugins/android/src', 'src/main/java']
         }
     }
 }

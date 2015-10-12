@@ -32,8 +32,17 @@ Finally, add `.addPackage(new io.cordova.reactnative.CordovaPluginPackage(this))
 > Not yet implemented for iOS yet. 
 
 ### Part 2 - Adding Plugins
-Once this react-native-cordova-plugin adapter is setup, you can start adding plugins to your project.
+The next step would be to add Cordova Plugins in the project. Now that `react-native-cordova-plugin` package is added to __node_modules__ you can add packages using 
 
-Currently the CLI for this project is not yet done. Open __lib\android-cli.js__ in this project and follow the manual steps. They will be automated soon.
+```
+$ node node_modules\react-native-cordova-plugin add cordova-plugin-device
+```
+
+The plugins are downloaded from the npm registry and installed in the project's __node_modules__ folder. The files in each plugin are also converted to a form that can be consumed by the ReactNative project. 
 
 ### Part 3 - Using the Plugins
+Currently, to use the plugin you have to use the `exec` interface. For the device plugin you can use `cordova.exec(console.log.bind(console), console.log.bind(console), 'Device', 'getDeviceInfo', []);`. This prints out the details about the device .
+> Work in progress to expose the Javascript API that each plugins expose so that you can use a friendlier syntax. I plan to work on this in the next week.
+
+## Contribute
+Would love to have an contributions to this project, especially to get the iOS part working. Please send in a pull request (explaining what it does) and I can merge it in !! 

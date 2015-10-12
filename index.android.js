@@ -1,3 +1,6 @@
-var {NativeModules} = require('react-native');
+var ReactNative = require('react-native');
+var Cordova = require('./lib/cordova/index.js');
 
-module.exports = NativeModules.CordovaPluginAdapter;
+var cordova = new Cordova(ReactNative.NativeModules.CordovaPluginAdapter);
+
+module.exports = cordova;

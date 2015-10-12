@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class WebViewMock implements CordovaWebView {
 
-    public static final String TAG = "WebViewProxy";
+    public static final String TAG = "CordovaWebViewProxy";
     public static final String NOT_CORDOVA_ERR = "This is not a cordova app, so it does not implement the method asked for";
 
     private CordovaResourceApi resourceApi;

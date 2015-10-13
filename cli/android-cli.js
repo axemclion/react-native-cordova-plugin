@@ -5,6 +5,7 @@ var Q = require('q');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf')
 var cordova = require('cordova-lib');
+var glob = require('glob');
 
 var CONFIG_XML = "<?xml version='1.0' encoding='utf-8'?><widget xmlns='http://www.w3.org/ns/widgets' xmlns:cdv='http://cordova.apache.org/ns/1.0'></widget>";
 
@@ -41,28 +42,26 @@ function writeIfNotExists(filename, data) {
 }
 
 Android.prototype.add = function(plugin) {
-    return cordova.plugman.raw.install(
-        'android',
-        PLATFORM_DIR,
-        plugin,
-        path.resolve(this.projectRoot, 'node_modules'), {
-            platformVersion: '4.0.0',
-            //TODO - figure out a way to make cordova browserify only to selectively pick files
-            browserify: false
-        }).then(function() {
-        console.log('Plugin %s added', plugin);
+    return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
+        platformVersion: '4.0.0',
+        //TODO - figure out a way to make cordova browserify only to selectively pick files
+        browserify: false
+    }).then(function() {
+        return generateCordovaJs();
+    }).then(function() {
+        console.log('Plugin %s added for Android', plugin);
     });
 };
 
 Android.prototype.remove = function(plugin) {
-    return cordova.plugman.raw.uninstall(
-        'android',
-        PLATFORM_DIR,
-        plugin,
-        path.resolve(this.projectRoot, 'node_modules'), {
-            platformVersion: '4.0.0',
-            browserify: false
-        });
+    return cordova.plugman.raw.uninstall('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
+        platformVersion: '4.0.0',
+        browserify: false
+    }).then(function() {
+        return generateCordovaJs();
+    }).then(function() {
+        console.log('Plugin %s removed for Android', plugin);
+    });
 };
 
 Android.prototype.clean = function() {
@@ -76,5 +75,45 @@ Android.prototype.clean = function() {
         console.log('If you still have trouble adding/removing plugins, delete all the plugin from node_modules');
     });
 };
+
+function generateCordovaJs() {
+    var CORDOVA_JS = path.resolve(__dirname, '../node_modules/cordova-lib/node_modules/cordova-js/src');
+
+    // TODO - Use a stream instead of reading all content to buffer
+    var requireJSContent = fs.readFileSync(path.resolve(CORDOVA_JS, 'scripts/require.js'), 'utf-8');
+    var pluginsContent = glob.sync('**/*.js', {
+        cwd: path.resolve(PLATFORM_DIR, 'assets/www'),
+        realpath: true
+    }).map(function(filename) {
+        return fs.readFileSync(filename, 'utf-8');
+    }).join('\n');
+
+    var cordovaModules = loadModules(['argscheck', 'utils', 'channel', 'base64', 'urlutil'], path.join(CORDOVA_JS, 'common'));
+    var customModules = loadModules(['pluginloader', 'exec'], path.resolve(__dirname, '../lib/cordova'));
+
+    var template = fs.readFileSync(path.resolve(__dirname, '../lib/cordova/cordova.tmpl.js'), 'utf-8');
+
+    template = template
+        .replace('//<{{__REQUIRE__}}>', requireJSContent)
+        .replace('//<{{__CORDOVA__}}>', cordovaModules)
+        .replace('//<{{__CORDOVA_OVERRIDES__}}>', customModules)
+        .replace('//<{{__PLUGINS__}}>', pluginsContent)
+
+
+    fs.writeFileSync(path.join(PLATFORM_DIR, 'assets/cordova.js'), template);
+    console.log('Generated cordova.js');
+};
+
+function loadModules(modules, location) {
+    return modules.map(function(module) {
+        var fileContent = '';
+        try {
+            fileContent = fs.readFileSync(path.join(location, module + '.js'));
+        } catch (e) {
+            console.log('Error when constructing cordova.js', e);
+        }
+        return 'cordova.define("cordova/' + module + '", function(require, exports, module) {' + fileContent + '});'
+    }).join('\n');
+}
 
 module.exports = Android;

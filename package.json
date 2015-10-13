@@ -4,7 +4,7 @@
   "description": "Cordova Plugin Adapter for React Native ",
   "main": "lib/index.js",
   "bin": {
-    "cordova-plugin" : "lib/cli.js"
+    "cordova-plugin" : "cli/cli.js"
   },
   "dependencies": {
     "cordova-android": "^4.1.1",

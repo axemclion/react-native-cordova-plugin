@@ -1,6 +1,7 @@
 package io.cordova.reactnative;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -12,19 +13,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.cordova.reactnative.CordovaPluginAdapter;
-
 public class CordovaPluginPackage implements ReactPackage {
-    Activity activity;
+    protected final Bundle savedInstanceState;
+    protected Activity activity;
+    protected CordovaPluginAdapter cordovaPluginAdapter;
 
-    public CordovaPluginPackage(Activity reactActivity){
-        this.activity = reactActivity;
+    public CordovaPluginPackage(Activity reactActivity, Bundle bundle) {
+        savedInstanceState = bundle;
+        activity = reactActivity;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        cordovaPluginAdapter = new CordovaPluginAdapter(reactContext, activity, savedInstanceState);
+
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new CordovaPluginAdapter(reactContext, activity));
+        modules.add(this.cordovaPluginAdapter);
         return modules;
     }
 

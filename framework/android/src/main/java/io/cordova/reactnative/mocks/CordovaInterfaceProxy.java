@@ -7,10 +7,12 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CordovaInterfaceProxy implements CordovaInterface {
     protected Activity activity;
     protected CordovaPlugin activityResultCallback;
+    private ExecutorService threadPool;
 
     @Override
     public void startActivityForResult(CordovaPlugin command, Intent intent, int requestCode) {
@@ -40,7 +42,10 @@ public class CordovaInterfaceProxy implements CordovaInterface {
 
     @Override
     public ExecutorService getThreadPool() {
-        return null;
+        if (this.threadPool == null) {
+            this.threadPool = Executors.newCachedThreadPool();
+        }
+        return this.threadPool;
     }
 
     public void setActivity(Activity activity) {

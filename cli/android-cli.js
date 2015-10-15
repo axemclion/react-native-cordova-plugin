@@ -9,6 +9,7 @@ var glob = require('glob');
 
 var CONFIG_XML = "<?xml version='1.0' encoding='utf-8'?><widget xmlns='http://www.w3.org/ns/widgets' xmlns:cdv='http://cordova.apache.org/ns/1.0'></widget>";
 var STRING_XML = '<?xml version="1.0" encoding="UTF-8"?><resources></resources>';
+var ANDROID_MANIFEST = "<?xml version='1.0' encoding='utf-8'?><manifest package='io.cordova.reactnative.cordovaplugin' xmlns:android='http://schemas.android.com/apk/res/android'></manifest>";
 
 var PLATFORM_DIR = path.resolve(__dirname, '../platforms/android');
 
@@ -71,6 +72,7 @@ Android.prototype.remove = function(plugin) {
 Android.prototype.clean = function() {
     var projectRoot = this.projectRoot;
     return Q().then(function() {
+        fs.writeFileSync(path.resolve(PLATFORM_DIR, 'AndroidManifest.xml'), ANDROID_MANIFEST);
         rimraf.sync(path.resolve(projectRoot, 'node_modules/android.json'));
         rimraf.sync(path.resolve(projectRoot, 'node_modules/fetch.json'));
         rimraf.sync(path.resolve(PLATFORM_DIR, 'src'));

@@ -12,25 +12,33 @@ var Android = require('./android-cli');
 var android = new Android(projectDir);
 
 var commands = {
-    add: function(plugin) {
-        console.log('Adding plugin %s', plugin);
-        return android.add(plugin);
+    add: function(plugins) {
+        console.log('Adding plugins %s', plugins.join());
+        return plugins.map(function(pluginName) {
+            return function() {
+                return android.add(pluginName);
+            }
+        }).reduce(Q.when, Q());
     },
-    rm: function(plugin) {
-        console.log('Removing plugin %s', plugin);
-        return android.remove(plugin);
+    rm: function(plugins) {
+        console.log('Removing plugins %s', plugins.join());
+        return plugins.map(function(pluginName) {
+            return function() {
+                return android.remove(pluginName);
+            }
+        }).reduce(Q.when, Q());
     },
     clean: function() {
         console.log('Cleaning all plugins and other artifacts');
         return android.clean();
     },
-    repair: function(){
+    repair: function() {
         console.log('Re-creating CordovaJS');
         return android.repair();
     }
 };
 
-var plugin = argv._[1];
+var plugins = argv._.slice(1);
 var command = '';
 switch (argv._[0]) {
     case 'add':
@@ -47,8 +55,8 @@ switch (argv._[0]) {
 }
 
 if (typeof commands[command] === 'function') {
-    commands[command](plugin).done();
+    commands[command](plugins).done();
 } else {
     console.log('Could not recognize command ', argv._[0]);
-    console.log('Usage : %s [add|rm] cordova-plugin-name', process.argv[1]);
+    console.log('Usage : %s [add|remove] cordova-plugin-name1 cordova-plugin-name1', process.argv[1]);
 }

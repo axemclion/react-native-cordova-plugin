@@ -8,6 +8,7 @@ var cordova = require('cordova-lib');
 var glob = require('glob');
 
 var CONFIG_XML = "<?xml version='1.0' encoding='utf-8'?><widget xmlns='http://www.w3.org/ns/widgets' xmlns:cdv='http://cordova.apache.org/ns/1.0'></widget>";
+var STRING_XML = '<?xml version="1.0" encoding="UTF-8"?><resources></resources>';
 
 var PLATFORM_DIR = path.resolve(__dirname, '../platforms/android');
 
@@ -16,7 +17,6 @@ cordova.events.on('log', require('debug')('rncp:cordova:log'));
 
 function Android(projectRoot) {
     this.projectRoot = projectRoot;
-    this.init();
 }
 
 Android.prototype.init = function() {
@@ -24,9 +24,12 @@ Android.prototype.init = function() {
         return;
     }
     mkdirp.sync(path.resolve(PLATFORM_DIR, 'src'));
+    mkdirp.sync(path.resolve(PLATFORM_DIR, 'libs'));
     mkdirp.sync(path.resolve(PLATFORM_DIR, 'res/xml'));
+    mkdirp.sync(path.resolve(PLATFORM_DIR, 'res/values'));
     mkdirp.sync(path.resolve(PLATFORM_DIR, 'assets/www'));
     writeIfNotExists(path.resolve(PLATFORM_DIR, 'res/xml/config.xml'), CONFIG_XML);
+    writeIfNotExists(path.resolve(PLATFORM_DIR, 'res/values/strings.xml'), STRING_XML);
     console.log('Initialized Android resources');
 
 };
@@ -42,6 +45,7 @@ function writeIfNotExists(filename, data) {
 }
 
 Android.prototype.add = function(plugin) {
+    this.init();
     return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
         platformVersion: '4.0.0',
         //TODO - figure out a way to make cordova browserify only to selectively pick files
@@ -71,8 +75,15 @@ Android.prototype.clean = function() {
         rimraf.sync(path.resolve(projectRoot, 'node_modules/fetch.json'));
         rimraf.sync(path.resolve(PLATFORM_DIR, 'src'));
         rimraf.sync(path.resolve(PLATFORM_DIR, 'res'));
+        rimraf.sync(path.resolve(PLATFORM_DIR, 'libs'));
         rimraf.sync(path.resolve(PLATFORM_DIR, 'assets'));
         console.log('If you still have trouble adding/removing plugins, delete all the plugin from node_modules');
+    });
+};
+
+Android.prototype.repair = function() {
+    return Q().then(function() {
+        return generateCordovaJs();
     });
 };
 

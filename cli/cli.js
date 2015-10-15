@@ -22,7 +22,11 @@ var commands = {
     },
     clean: function() {
         console.log('Cleaning all plugins and other artifacts');
-        return android.clean(plugin);
+        return android.clean();
+    },
+    repair: function(){
+        console.log('Re-creating CordovaJS');
+        return android.repair();
     }
 };
 

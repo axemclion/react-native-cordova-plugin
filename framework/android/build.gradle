@@ -15,12 +15,18 @@ android {
         main{
            manifest.srcFile '../../platforms/android/AndroidManifest.xml'
            java.srcDirs = ['../../node_modules/cordova-android/framework/src', '../../platforms/android/src', 'src/main/java']
-            res.srcDirs = ['../../platforms/android/res']
+           res.srcDirs = ['../../platforms/android/res']
+           jniLibs.srcDirs = ['../../platforms/android/libs']
+           resources.srcDirs = ['../../platforms/android/src']
+           aidl.srcDirs = ['../../platforms/android/src']
+           renderscript.srcDirs = ['../../platforms/android/src']
+           assets.srcDirs = ['../../platforms/android/assets']
         }
     }
 }
 
 dependencies {
+    compile fileTree(include: '*.jar', dir: '../../platforms/android/libs')
     compile 'com.facebook.react:react-native:0.11.+'
 }
 

@@ -99,7 +99,7 @@ function generateCordovaJs() {
         return fs.readFileSync(filename, 'utf-8');
     }).join('\n');
 
-    var cordovaModules = loadModules(['argscheck', 'utils', 'channel', 'base64', 'urlutil'], path.join(CORDOVA_JS, 'common'));
+    var cordovaModules = loadModules(['argscheck', 'utils', 'modulemapper', 'builder', 'channel', 'base64', 'urlutil'], path.join(CORDOVA_JS, 'common'));
     var customModules = loadModules(['pluginloader', 'platform', 'exec'], path.resolve(__dirname, '../lib/cordova'));
 
     var template = fs.readFileSync(path.resolve(__dirname, '../lib/cordova/cordova.tmpl.js'), 'utf-8');

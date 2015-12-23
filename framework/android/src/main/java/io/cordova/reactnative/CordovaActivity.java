@@ -10,7 +10,7 @@ import org.apache.cordova.LOG;
 public class CordovaActivity extends Activity {
 
     private static final String TAG = "CORDOVA_ACTIVITY";
-    protected CordovaPluginPackage cordovaPluginPackage;
+    public CordovaPluginPackage cordovaPluginPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

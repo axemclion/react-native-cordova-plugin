@@ -55,6 +55,7 @@ public class MockWebViewImpl implements CordovaWebView {
         params.putString("message", cr.getMessage());
         params.putInt("status", cr.getStatus());
         params.putInt("messageType", cr.getMessageType());
+        params.putBoolean("keepCallback", cr.getKeepCallback());
         params.putString("callbackId", callbackId);
         this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(JS_MESSAGE_CORDOVA_WEBVIEW_PROXY, params);
     }

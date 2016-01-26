@@ -24,7 +24,7 @@ public class CordovaPluginAdapter extends ReactContextBaseJavaModule {
     private static final String TAG = "CordovaPluginAdapter";
     private CordovaPreferences preferences;
     private ArrayList<PluginEntry> pluginEntries;
-    protected CordovaInterfaceImpl cordovaInterface;
+    public CordovaInterfaceImpl cordovaInterface;
 
     public CordovaPluginAdapter(ReactApplicationContext reactContext, Activity mainReactActivity, Bundle savedInstanceState) {
         super(reactContext);

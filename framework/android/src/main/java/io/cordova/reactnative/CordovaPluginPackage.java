@@ -16,7 +16,7 @@ import java.util.List;
 public class CordovaPluginPackage implements ReactPackage {
     protected final Bundle savedInstanceState;
     protected Activity activity;
-    protected CordovaPluginAdapter cordovaPluginAdapter;
+    public CordovaPluginAdapter cordovaPluginAdapter;
 
     public CordovaPluginPackage(Activity reactActivity, Bundle bundle) {
         savedInstanceState = bundle;

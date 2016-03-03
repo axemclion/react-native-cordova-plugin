@@ -44,7 +44,7 @@ $ node node_modules\.bin\cordova-plugin add cordova-plugin-device
 The plugins are downloaded from the npm registry and installed in the project's __node_modules__ folder. The files in each plugin are also converted to a form that can be consumed by the ReactNative project. 
 
 ### Part 3 - Using the Plugins
-To use a plugin, simply require `var cordova = require('react-native-cordova-plugin');`. You can then start using the Cordova plugin APIs using `cordova.device.getInfo(console.log.bin(console.log), console.log.bind(console));`.
+To use a plugin, simply require `var cordova = require('react-native-cordova-plugin');`. You can then start using the Cordova plugin APIs using `cordova.device.getInfo(console.log.bind(console), console.log.bind(console));`.
 
 This [example file](https://gist.github.com/axemclion/b30bdfe991e509851705) shows a sample application. 
 

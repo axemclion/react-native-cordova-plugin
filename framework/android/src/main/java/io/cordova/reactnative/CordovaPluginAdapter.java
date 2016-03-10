@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class CordovaPluginAdapter extends ReactContextBaseJavaModule {
 
+    Activity mActivity = null;
+
     PluginManager pluginManager;
 
     private static final String TAG = "CordovaPluginAdapter";
@@ -26,17 +28,19 @@ public class CordovaPluginAdapter extends ReactContextBaseJavaModule {
     private ArrayList<PluginEntry> pluginEntries;
     public CordovaInterfaceImpl cordovaInterface;
 
-    public CordovaPluginAdapter(ReactApplicationContext reactContext, Activity mainReactActivity, Bundle savedInstanceState) {
+    public CordovaPluginAdapter(ReactApplicationContext reactContext, Activity activity) {
+
         super(reactContext);
+        mActivity = activity;
 
         // Perform all steps that occur in CordovaActivity.onCreate
 
-        loadConfig(reactContext, mainReactActivity);
+        loadConfig(reactContext, mActivity);
 
-        cordovaInterface = new CordovaInterfaceImpl(mainReactActivity);
-        if (savedInstanceState != null) {
-            cordovaInterface.restoreInstanceState(savedInstanceState);
-        }
+        cordovaInterface = new CordovaInterfaceImpl(mActivity);
+        //if (savedInstanceState != null) {
+        //    cordovaInterface.restoreInstanceState(savedInstanceState);
+        //}
 
         MockWebViewImpl mockWebView = new MockWebViewImpl(reactContext);
         mockWebView.init(cordovaInterface, pluginEntries, preferences);

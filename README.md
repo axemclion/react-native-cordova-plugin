@@ -37,7 +37,7 @@ For RN >= 0.18:
         return Arrays.<ReactPackage>asList(
 -            new MainReactPackage()
 +            new MainReactPackage(), // <-- add comma here
-+            new CordovaPluginPackage(this, null) // <-- add the package (`null` is for initial bundle/savedInstanceState value)
++            new CordovaPluginPackage(this) // <-- add the package
         );
     }
 ```

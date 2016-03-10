@@ -49,7 +49,7 @@ Android.prototype.add = function(plugin) {
     this.init();
     var self = this;
     return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
-        platformVersion: '4.0.0',
+        platformVersion: '5.0.0',
         //TODO - figure out a way to make cordova browserify only to selectively pick files
         browserify: false
     }).then(function() {
@@ -62,7 +62,7 @@ Android.prototype.add = function(plugin) {
 Android.prototype.remove = function(plugin) {
     var self = this;
     return cordova.plugman.raw.uninstall('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
-        platformVersion: '4.0.0',
+        platformVersion: '5.0.0',
         browserify: false
     }).then(function() {
         return generateCordovaJs(self.projectRoot);

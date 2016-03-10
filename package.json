@@ -7,15 +7,15 @@
     "cordova-plugin": "cli/cli.js"
   },
   "dependencies": {
-    "cordova-android": "^4.1.1",
-    "cordova-lib": "^5.3.3",
     "debug": "^2.2.0",
     "glob": "^5.0.15",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "npm": "^3.3.6",
     "q": "^1.4.1",
-    "rimraf": "^2.4.3"
+    "rimraf": "^2.4.3",
+    "cordova-android": "^5.1.1",
+    "cordova-lib": "^5.4.1"
   },
   "devDependencies": {},
   "author": "Parashuram <code@nparashuram.com>",

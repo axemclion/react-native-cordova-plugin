@@ -14,21 +14,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class CordovaPluginPackage implements ReactPackage {
-    protected final Bundle savedInstanceState;
-    protected Activity activity;
+    private Activity mActivity = null;
+
     public CordovaPluginAdapter cordovaPluginAdapter;
 
-    public CordovaPluginPackage(Activity reactActivity, Bundle bundle) {
-        savedInstanceState = bundle;
-        activity = reactActivity;
+    public CordovaPluginPackage(Activity activity) {
+        mActivity = activity;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        cordovaPluginAdapter = new CordovaPluginAdapter(reactContext, activity, savedInstanceState);
-
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(this.cordovaPluginAdapter);
+        modules.add(new CordovaPluginAdapter(reactContext, mActivity));
         return modules;
     }
 

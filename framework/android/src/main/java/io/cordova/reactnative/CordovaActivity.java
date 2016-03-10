@@ -15,7 +15,7 @@ public class CordovaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cordovaPluginPackage = new CordovaPluginPackage(this, savedInstanceState);
+        cordovaPluginPackage = new CordovaPluginPackage(this);
     }
 
     @Override

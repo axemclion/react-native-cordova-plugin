@@ -99,7 +99,7 @@ function generateCordovaJs(projectRoot) {
     });
     var CORDOVA_JS = '';
     if (cordovaJSNpm.length !== 1) {
-        console.log('Could not find Cordova-JS node mobule');
+        console.log('Could not find Cordova-JS node module');
         return;
     } else {
         CORDOVA_JS = path.join(cordovaJSNpm[0], 'src');

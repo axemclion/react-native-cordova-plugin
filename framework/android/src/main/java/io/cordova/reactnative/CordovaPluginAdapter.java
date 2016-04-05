@@ -2,6 +2,7 @@ package io.cordova.reactnative;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -28,11 +29,7 @@ public class CordovaPluginAdapter extends ReactContextBaseJavaModule {
 
     public CordovaPluginAdapter(ReactApplicationContext reactContext, Activity mainReactActivity, Bundle savedInstanceState) {
         super(reactContext);
-
-        // Perform all steps that occur in CordovaActivity.onCreate
-
         loadConfig(reactContext, mainReactActivity);
-
         cordovaInterface = new CordovaInterfaceImpl(mainReactActivity);
         if (savedInstanceState != null) {
             cordovaInterface.restoreInstanceState(savedInstanceState);
@@ -50,12 +47,38 @@ public class CordovaPluginAdapter extends ReactContextBaseJavaModule {
         return TAG;
     }
 
+    /**
+     * Exposed to the Javascript, this is the same exec call that is available to a Cordova plugin
+     *
+     * @param service
+     * @param action
+     * @param callbackId
+     * @param args
+     */
     @ReactMethod
     public void exec(String service, String action, String callbackId, String args) {
         LOG.d(TAG, String.format("Calling Cordova plugin %s.%s(%s) - %s", service, action, args, callbackId));
         this.pluginManager.exec(service, action, callbackId, args);
     }
 
+    /**
+     * Implementation called from the Activity. This is called when a plugin (like Camera) starts a
+     * new activity then calls this with the result. Cordova callbacks are executed via this
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        this.cordovaInterface.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    /**
+     * Reads config.xml and loads all the plugin classes
+     *
+     * @param context
+     * @param activity
+     */
     public void loadConfig(Context context, Activity activity) {
         ConfigXmlParser parser = new ConfigXmlParser();
         parser.parse(context);

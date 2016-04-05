@@ -4,6 +4,8 @@ platforms/android/assets
 platforms/android/libs
 platforms/android/res
 platforms/android/src
+platforms/android/android.json
+platforms/android/platform_www/
 
 ### Android ###
 # Built application files

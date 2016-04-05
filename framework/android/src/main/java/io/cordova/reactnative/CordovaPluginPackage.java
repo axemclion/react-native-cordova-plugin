@@ -1,6 +1,7 @@
 package io.cordova.reactnative;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.ReactPackage;
@@ -14,12 +15,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class CordovaPluginPackage implements ReactPackage {
-    protected final Bundle savedInstanceState;
+    protected Bundle savedInstanceState;
     protected Activity activity;
     public CordovaPluginAdapter cordovaPluginAdapter;
 
-    public CordovaPluginPackage(Activity reactActivity, Bundle bundle) {
-        savedInstanceState = bundle;
+    public CordovaPluginPackage(Activity reactActivity) {
         activity = reactActivity;
     }
 
@@ -40,4 +40,23 @@ public class CordovaPluginPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
+
+    /**
+     * Called by onCreate of the React App's MainActivity
+     * @param savedInstanceState
+     */
+    public void setSavedInstanceState(Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
+    }
+
+    /**
+     * Called from the React App's MainActivity
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        this.cordovaPluginAdapter.onActivityResult(requestCode, resultCode, intent);
+    }
+
 }

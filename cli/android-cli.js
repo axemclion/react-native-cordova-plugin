@@ -13,8 +13,8 @@ var ANDROID_MANIFEST = "<?xml version='1.0' encoding='utf-8'?><manifest package=
 
 var PLATFORM_DIR = path.resolve(__dirname, '../platforms/android');
 
-cordova.events.on('verbose', require('debug')('rncp:cordova:verbose'));
-cordova.events.on('log', require('debug')('rncp:cordova:log'));
+cordova.events.on('verbose', console.log.bind(console));
+cordova.events.on('log', console.log.bind(console));
 
 function Android(projectRoot) {
     this.projectRoot = projectRoot;
@@ -24,18 +24,21 @@ Android.prototype.init = function() {
     if (this.isInitialized) {
         return;
     }
-    mkdirp.sync(path.resolve(PLATFORM_DIR, 'src'));
-    mkdirp.sync(path.resolve(PLATFORM_DIR, 'libs'));
-    mkdirp.sync(path.resolve(PLATFORM_DIR, 'res/xml'));
-    mkdirp.sync(path.resolve(PLATFORM_DIR, 'res/values'));
-    mkdirp.sync(path.resolve(PLATFORM_DIR, 'assets/www'));
-    writeIfNotExists(path.resolve(PLATFORM_DIR, 'res/xml/config.xml'), CONFIG_XML);
-    writeIfNotExists(path.resolve(PLATFORM_DIR, 'res/values/strings.xml'), STRING_XML);
+    createDirectories(['src', 'libs', 'res/xml', 'res/values', 'assets/www']);
+    writeIfNotExists('res/xml/config.xml', CONFIG_XML);
+    writeIfNotExists('res/values/strings.xml', STRING_XML);
+    writeIfNotExists('AndroidManifest.xml', ANDROID_MANIFEST);
     console.log('Initialized Android resources');
-
 };
 
+function createDirectories(dirs) {
+    dirs.forEach(function(dir) {
+        mkdirp.sync(path.resolve(PLATFORM_DIR, dir));
+    });
+}
+
 function writeIfNotExists(filename, data) {
+    filename = path.resolve(PLATFORM_DIR, filename);
     try {
         if (!fs.lstatSync(filename).isFile()) {
             throw ('This is not a file, so write it anyway');
@@ -49,25 +52,21 @@ Android.prototype.add = function(plugin) {
     this.init();
     var self = this;
     return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
-        platformVersion: '4.0.0',
+        platformVersion: '5.0.0',
         //TODO - figure out a way to make cordova browserify only to selectively pick files
         browserify: false
     }).then(function() {
         return generateCordovaJs(self.projectRoot);
-    }).then(function() {
-        console.log('Plugin %s added for Android', plugin);
     });
 };
 
 Android.prototype.remove = function(plugin) {
     var self = this;
     return cordova.plugman.raw.uninstall('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
-        platformVersion: '4.0.0',
+        platformVersion: '5.0.0',
         browserify: false
     }).then(function() {
         return generateCordovaJs(self.projectRoot);
-    }).then(function() {
-        console.log('Plugin %s removed for Android', plugin);
     });
 };
 
@@ -75,13 +74,9 @@ Android.prototype.clean = function() {
     var projectRoot = this.projectRoot;
     return Q().then(function() {
         rimraf.sync(PLATFORM_DIR);
-        mkdirp.sync(path.resolve(PLATFORM_DIR));
-        fs.writeFileSync(path.resolve(PLATFORM_DIR, 'AndroidManifest.xml'), ANDROID_MANIFEST);
-
         rimraf.sync(path.resolve(projectRoot, 'node_modules/android.json'));
         rimraf.sync(path.resolve(projectRoot, 'node_modules/fetch.json'));
         rimraf.sync(path.resolve(projectRoot, 'node_modules/android'))
-        console.log('If you still have trouble adding/removing plugins, delete all the plugin from node_modules');
     });
 };
 
@@ -99,8 +94,8 @@ function generateCordovaJs(projectRoot) {
     });
     var CORDOVA_JS = '';
     if (cordovaJSNpm.length !== 1) {
-        console.log('Could not find Cordova-JS node module');
-        return;
+        console.log('Could not find Cordova-JS node module. Is it installed in the node_modules folder ? ');
+        throw 'Could not find cordova-js node module.';
     } else {
         CORDOVA_JS = path.join(cordovaJSNpm[0], 'src');
     }

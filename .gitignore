@@ -1,11 +1,5 @@
-## Project Specifi Files ###
 framework/android/build
-platforms/android/assets
-platforms/android/libs
-platforms/android/res
-platforms/android/src
-platforms/android/android.json
-platforms/android/platform_www/
+platforms
 
 ### Android ###
 # Built application files

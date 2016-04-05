@@ -55,7 +55,11 @@ switch (argv._[0]) {
 }
 
 if (typeof commands[command] === 'function') {
-    commands[command](plugins).done();
+    commands[command](plugins).then(function() {
+        console.log('Done with [%s] %s', command, plugins);
+    }, function(err) {
+        console.log('An error occured ===> \n', err);
+    }).done();
 } else {
     console.log('Could not recognize command ', argv._[0]);
     console.log('Usage : %s [add|remove] cordova-plugin-name1 cordova-plugin-name1', process.argv[1]);

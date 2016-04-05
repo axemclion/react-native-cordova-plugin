@@ -11,16 +11,16 @@ android {
         versionName "1.0"
     }
 
-    sourceSets{
-        main{
-           manifest.srcFile '../../platforms/android/AndroidManifest.xml'
-           java.srcDirs = ['../../../../node_modules/cordova-android/framework/src', '../../node_modules/cordova-android/framework/src', '../../platforms/android/src', 'src/main/java']
-           res.srcDirs = ['../../platforms/android/res']
-           jniLibs.srcDirs = ['../../platforms/android/libs']
-           resources.srcDirs = ['../../platforms/android/src']
-           aidl.srcDirs = ['../../platforms/android/src']
-           renderscript.srcDirs = ['../../platforms/android/src']
-           assets.srcDirs = ['../../platforms/android/assets']
+    sourceSets {
+        main {
+            manifest.srcFile androidManifest()
+            java.srcDirs = [frameworkLocation(), '../../platforms/android/src', 'src/main/java']
+            res.srcDirs = ['../../platforms/android/res']
+            jniLibs.srcDirs = ['../../platforms/android/libs']
+            resources.srcDirs = ['../../platforms/android/src']
+            aidl.srcDirs = ['../../platforms/android/src']
+            renderscript.srcDirs = ['../../platforms/android/src']
+            assets.srcDirs = ['../../platforms/android/assets']
         }
     }
 }
@@ -30,4 +30,37 @@ dependencies {
     compile 'com.facebook.react:react-native:0.11.+'
 }
 
+// Gets the location of cordova-android library
+String frameworkLocation() {
+    def path = checkFrameworkAtPath(fileTree(dir: "$rootDir/../node_modules", include: '**/cordova.gradle'));
+    if (path == null) {
+        path = checkFrameworkAtPath(fileTree(dir: "$projectDir/../node_modules", include: '**/cordova.gradle'))
+    }
+ 
+    if (path == null) {
+        throw new Error('Could not locate cordova-android, an npm module that is required for the react-native-cordova-plugin.' +
+                '\nCheck if it is installed in node_modules of your app.' +
+                '\nIf not, try running npm install on your app again')
+    }
 
+    logger.lifecycle('Found cordova-android at ' + path.concat('/src'));
+    return path.concat('/src');
+}
+
+String checkFrameworkAtPath(fileTreePath) {
+    def files = fileTreePath.getFiles();
+    if (files.size() == 1) {
+        return files.iterator().next().getParent();
+    } else {
+        return null;
+    }
+}
+
+String androidManifest() {
+    def generatedManifest = new File('../../platforms/android/AndroidManifest.xml');
+    if (generatedManifest.exists()) {
+        return generatedManifest.getPath();
+    } else {
+        return 'src/main/AndroidManifest.xml';
+    }
+}

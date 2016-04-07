@@ -34,7 +34,7 @@ dependencies {
 String frameworkLocation() {
     def path = checkFrameworkAtPath(fileTree(dir: "$rootDir/../node_modules", include: '**/cordova.gradle'));
     if (path == null) {
-        path = checkFrameworkAtPath(fileTree(dir: "$projectDir/../node_modules", include: '**/cordova.gradle'))
+        path = checkFrameworkAtPath(fileTree(dir: "$projectDir/../../node_modules", include: '**/cordova.gradle'))
     }
  
     if (path == null) {

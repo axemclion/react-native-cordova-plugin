@@ -1,0 +1,22 @@
+{
+  "name": "kitchensink",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "cordova-plugin-battery-status": "^1.1.1",
+    "cordova-plugin-bluetoothle": "^3.3.0",
+    "cordova-plugin-camera": "^2.1.1",
+    "cordova-plugin-contacts": "^2.0.1",
+    "cordova-plugin-device-orientation": "^1.0.2",
+    "cordova-plugin-dialogs": "^1.2.0",
+    "cordova-plugin-network-information": "^1.2.0",
+    "cordova-plugin-qrcode": "^1.0.2-dev",
+    "cordova-plugin-vibration": "^2.1.0",
+    "phonegap-plugin-barcodescanner": "^4.1.0",
+    "react": "^0.14.8",
+    "react-native": "^0.22.2"
+  }
+}

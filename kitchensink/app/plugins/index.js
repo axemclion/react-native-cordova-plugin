@@ -24,10 +24,11 @@ export default class PluginList extends Component {
     }
 
     renderRow(rowData) {
+        const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1);
         return (
             <View>
                 <TouchableHighlight onPress={(e) => this.props.onSelectPlugin(rowData) }>
-                    <Text>{rowData}</Text>
+                    <Text>{capitalize(rowData) }</Text>
                 </TouchableHighlight>
             </View>
         );
@@ -39,7 +40,6 @@ export default class PluginList extends Component {
                 style={styles.listView}
                 dataSource={this.state.dataSource}
                 renderRow={(row) => this.renderRow(row) }
-                renderHeader={() => <Text>List of plugins</Text>}
                 />
         );
     }

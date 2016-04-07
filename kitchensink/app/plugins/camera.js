@@ -1,26 +1,32 @@
 import React, {
     Component,
     View,
-    Text
+    Text,
+    TouchableHighlight
 } from 'react-native';
 
-var Cordova = require('react-native-cordova-plugin');
+const Cordova = require('react-native-cordova-plugin');
 
 export default class Camera extends Component {
     constructor(props) {
         super(props);
         this.state = { result: 'Not called yet' };
+    }
 
-        Cordova.navigator.camera.getPicture((res) => {
-            this.setState({ result: res });
-        }, (err) => {
-            this.setState({ result: err });
-        });
+    takePicture() {
+        Cordova.navigator.camera.getPicture((img) => this.setState({ result: JSON.stringify(img) }), (img) => this.setState({ result: JSON.stringify(img) }));
     }
 
     render() {
         return (
-            <Text>Camera Plugin</Text>
+            <View>
+                <TouchableHighlight onPress={this.takePicture.bind(this) }>
+                    <Text>Take a picture</Text>
+                </TouchableHighlight>
+                <Text>
+                    {this.state.result}
+                </Text>
+            </View>
         )
     }
 }

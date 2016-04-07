@@ -17,6 +17,7 @@
     "cordova-plugin-vibration": "^2.1.0",
     "phonegap-plugin-barcodescanner": "^4.1.0",
     "react": "^0.14.8",
-    "react-native": "^0.22.2"
+    "react-native": "^0.22.2",
+    "react-native-cordova-plugin": "0.0.10"
   }
 }

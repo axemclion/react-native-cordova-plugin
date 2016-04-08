@@ -4,23 +4,26 @@ import React, {
     StyleSheet
 } from 'react-native';
 
+var Ionicons = require('react-native-vector-icons/Ionicons');
+
 export default class Toolbar extends Component {
     getTitle(route) {
         if (route.name === 'plugin') {
-            return 'Plugin : ' + route.pluginName;
+            return route.plugin.name + ' Plugin';
         } else {
             return 'Plugin List';
         }
     }
     render() {
         return (
-            <ToolbarAndroid
+            <Ionicons.ToolbarAndroid
                 style={styles.toolbar}
                 title={this.getTitle(this.props.currentRoute) }
                 titleColor="white"
+                onIconClicked={this.props.onIconClicked}
+                navIconName={this.props.currentRoute.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
                 >
-            </ToolbarAndroid>
-
+            </Ionicons.ToolbarAndroid>
         );
     }
 }

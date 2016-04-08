@@ -4,7 +4,6 @@ import React, {
     Text,
     View,
     BackAndroid,
-    ToastAndroid,
 } from 'react-native';
 
 import Toolbar from './Toolbar';
@@ -16,9 +15,11 @@ class AppIndex extends Component {
         this.state = {
             currentRoute: {}
         }
+        BackAndroid.addEventListener('hardwareBackPress', () => this.goBack());
     }
 
-    onBack(nav) {
+    goBack() {
+        let nav = this.navigator;
         if (nav && nav.getCurrentRoutes().length > 1) {
             nav.pop();
             return true;
@@ -26,47 +27,50 @@ class AppIndex extends Component {
         return false;
     }
 
+    navigateToPlugin(plugin) {
+        let nav = this.navigator;
+        nav && nav.push({ name: 'plugin', plugin });
+    }
+
     router(route, nav) {
-        let RouteComponent = (
-            <PluginList onSelectPlugin={(pluginName) => {
-                nav.push({
-                    name: "plugin",
-                    pluginName
-                })
-            } }></PluginList>
-        );
-
+        let RouteComponent = '';
         if (route.name === 'plugin') {
-            let Plugin = plugins[route.pluginName]
-            if (typeof Plugin !== 'undefined') {
-                RouteComponent = <Plugin></Plugin>
-            } else {
-                ToastAndroid.show('Could not find plugin ' + route.pluginName, ToastAndroid.SHORT);
-            }
+            let Plugin = route.plugin.module;
+            RouteComponent = (<Plugin></Plugin>);
+        } else {
+            RouteComponent = (<PluginList onSelect={this.navigateToPlugin.bind(this) }></PluginList>);
         }
-
         return (
-            <View style={{ marginTop: 56, flex: 1 }}>
+            <View style={{ marginTop: 56 }}>
                 {RouteComponent}
             </View>
         );
+    }
+
+    handleToolbarIcon(type) {
+        this.goBack();
     }
 
     render() {
         return (
             <Navigator
                 initialRoute={{}}
-                configureScene={() => Navigator.SceneConfigs.FloatFromRight}
+                configureScene={() => Navigator.SceneConfigs.HorizontalSwipeJump}
                 renderScene={(route, nav) => this.router(route, nav) }
                 ref = {(navigator) => {
-                    BackAndroid.addEventListener('hardwareBackPress', () => this.onBack(navigator));
+                    this.navigator = navigator;
                 } }
                 onWillFocus={(route) => {
                     this.setState({
                         currentRoute: route
                     });
                 } }
-                navigationBar={<Toolbar currentRoute={this.state.currentRoute}></Toolbar>}
+                navigationBar={
+                    <Toolbar
+                        currentRoute={this.state.currentRoute}
+                        onIconClicked={this.handleToolbarIcon.bind(this) }>
+                    </Toolbar>
+                }
                 />
         );
     }

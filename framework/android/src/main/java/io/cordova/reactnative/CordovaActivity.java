@@ -15,7 +15,8 @@ public class CordovaActivity extends Activity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         cordovaPluginPackage.onActivityResult(requestCode, resultCode, intent);
     }
 

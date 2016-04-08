@@ -87,19 +87,33 @@ Android.prototype.repair = function() {
     });
 };
 
-function generateCordovaJs(projectRoot) {
+function findCordovaJSModule(projectRoot) {
+    // Look for Cordova-js under ReactNative's node_modules
     var cordovaJSNpm = glob.sync('**/cordova-js', {
         cwd: path.resolve(projectRoot, 'node_modules'),
         realpath: true
     });
-    var CORDOVA_JS = '';
-    if (cordovaJSNpm.length !== 1) {
-        console.log('Could not find Cordova-JS node module. Is it installed in the node_modules folder ? ');
-        throw 'Could not find cordova-js node module.';
-    } else {
-        CORDOVA_JS = path.join(cordovaJSNpm[0], 'src');
+    if (cordovaJSNpm.length === 1) {
+        return path.join(cordovaJSNpm[0], 'src');
     }
+
+    // Look for Cordova-js under this project's node_modules
+    cordovaJSNpm = glob.sync('**/cordova-js', {
+        cwd: path.resolve(__dirname, '../node_modules'),
+        realpath: true
+    });
+    if (cordovaJSNpm.length === 1) {
+        return path.join(cordovaJSNpm[0], 'src');
+    }
+
+    console.log('Could not find Cordova-JS node module. Is it installed in the node_modules folder ? ');
+    throw 'Could not find cordova-js node module.';
+}
+
+function generateCordovaJs(projectRoot) {
+
     // TODO - Use a stream instead of reading all content to buffer
+    var CORDOVA_JS = findCordovaJSModule(projectRoot);
     var requireJSContent = fs.readFileSync(path.resolve(CORDOVA_JS, 'scripts/require.js'), 'utf-8');
     var pluginsContent = glob.sync('**/*.js', {
         cwd: path.resolve(PLATFORM_DIR, 'platform_www'),

@@ -57,10 +57,10 @@ String checkFrameworkAtPath(fileTreePath) {
 }
 
 String androidManifest() {
-    def generatedManifest = new File('../../platforms/android/AndroidManifest.xml');
+    def generatedManifest = new File("$projectDir/../../platforms/android/AndroidManifest.xml");
     if (generatedManifest.exists()) {
         return generatedManifest.getPath();
     } else {
-        return 'src/main/AndroidManifest.xml';
+        return 'src/main/AndroidManifest.xml' ;
     }
 }

@@ -7,8 +7,7 @@ import React, {
     StyleSheet
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
-
+const Icon = require('react-native-vector-icons/Ionicons');
 const Cordova = require('react-native-cordova-plugin');
 
 export default class Camera extends Component {
@@ -16,12 +15,12 @@ export default class Camera extends Component {
         super(props);
         this.state = {
             result: 'No picture taken yet',
-            img: 'http://facebook.github.io/react/img/logo_og.png'
+            img: 'http://placehold.it/350x350'
         };
     }
 
     takePicture(source) {
-        this.setState({result: ''});
+        this.setState({ result: '' });
         Cordova.navigator.camera.getPicture(
             (img) => this.setState({ img }),
             (result) => this.setState({ result }),

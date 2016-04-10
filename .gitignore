@@ -1,8 +1,9 @@
 framework/android/build
 platforms
 **/build
+tsconfig.json 
 
-.vscode
+**/.vscode
 
 ### Android ###
 # Built application files

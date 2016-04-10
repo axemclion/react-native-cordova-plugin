@@ -12,7 +12,7 @@ import AppIndex from './app/main';
 
 class kitchensink extends Component {
     render() {
-        return <AppIndex></AppIndex>
+        return <AppIndex plugin='cordova-plugin-contacts'></AppIndex>
     }
 }
 

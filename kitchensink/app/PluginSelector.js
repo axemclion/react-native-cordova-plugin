@@ -8,37 +8,34 @@ import React, {
     ToastAndroid
 } from 'react-native';
 
+import PluginList from './PluginList';
+
 var Icon = require('react-native-vector-icons/Ionicons');
 
-const plugins = [
-    { id: 'cordova-plugin-camera', name: 'Camera', module: require('./camera').default },
-    { id: 'cordova-plugin-contacts', name: 'Contacts', module: require('./contacts').default }
-];
-
-function findPlugin(pluginId) {
-    let plugin = plugins.filter((plugin) => plugin.id === pluginId);
-    if (plugin.length !== 1) {
-        ToastAndroid.show('Could not find plugin ' + pluginId, ToastAndroid.SHORT);
-    } else {
-        return plugin[0];
-    }
-}
-
-export default class PluginList extends Component {
+export default class PluginSelector extends Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
         this.state = {
-            dataSource: ds.cloneWithRows(plugins),
+            dataSource: ds.cloneWithRows(PluginList.all()),
+        }
+    }
+
+    onSelectPlugin(pluginId) {
+        var plugin = PluginList.findById(pluginId);
+        if (plugin) {
+            this.props.onSelect(plugin);
+        } else {
+            ToastAndroid.show('Could not find plugin ' + pluginId, ToastAndroid.SHORT);
         }
     }
 
     renderRow(plugin) {
         return (
             <View>
-                <TouchableHighlight onPress={(e) => this.props.onSelect(findPlugin(plugin.id)) }>
+                <TouchableHighlight onPress={(e) => this.onSelectPlugin(plugin.id) }>
                     <View style={styles.row}>
                         <View style={styles.iconContent}>
                             <Icon name={plugin.icon || 'android-' + plugin.name.toLowerCase() } size={20} style={styles.icon}/>
@@ -50,13 +47,13 @@ export default class PluginList extends Component {
                     </View>
                 </TouchableHighlight>
                 <View style={styles.separator} />
-            </View>
+            </View >
         );
     }
 
     render() {
         return (
-            <View style={styles.listContainer}>
+            <View style={styles.container}>
                 <ListView
                     style={styles.listView}
                     dataSource={this.state.dataSource}
@@ -67,10 +64,8 @@ export default class PluginList extends Component {
     }
 }
 
-export {plugins};
-
 styles = StyleSheet.create({
-    listContainer: {
+    container: {
         flex: 1,
     },
     list: {

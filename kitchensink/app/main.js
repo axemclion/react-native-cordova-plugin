@@ -3,11 +3,13 @@ import React, {
     Component,
     Text,
     View,
+    ScrollView,
     BackAndroid,
 } from 'react-native';
 
 import Toolbar from './Toolbar';
-import PluginList, {plugins} from './plugins';
+import PluginSelector from './PluginSelector';
+import PluginList from './PluginList';
 
 class AppIndex extends Component {
     constructor(props) {
@@ -38,23 +40,27 @@ class AppIndex extends Component {
             let Plugin = route.plugin.module;
             RouteComponent = (<Plugin></Plugin>);
         } else {
-            RouteComponent = (<PluginList onSelect={this.navigateToPlugin.bind(this) }></PluginList>);
+            RouteComponent = (<PluginSelector onSelect={this.navigateToPlugin.bind(this) }></PluginSelector>);
         }
         return (
-            <View style={{ marginTop: 56 }}>
+            <ScrollView style={{ marginTop: 56 }}>
                 {RouteComponent}
-            </View>
+            </ScrollView>
         );
     }
 
     handleToolbarIcon(type) {
-        this.goBack();
+        this.navigator.resetTo({ name: 'index' });
     }
 
     render() {
+        let initialRoute = { name: 'index' };
+        if (typeof this.props.plugin === 'string') {
+            initialRoute = { name: 'plugin', plugin: PluginList.findById(this.props.plugin) }
+        }
         return (
             <Navigator
-                initialRoute={{}}
+                initialRoute={initialRoute}
                 configureScene={() => Navigator.SceneConfigs.HorizontalSwipeJump}
                 renderScene={(route, nav) => this.router(route, nav) }
                 ref = {(navigator) => {

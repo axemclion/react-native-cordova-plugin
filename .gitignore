@@ -1,5 +1,7 @@
 framework/android/build
 platforms
+.vscode/
+
 
 ### Android ###
 # Built application files

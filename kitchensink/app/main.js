@@ -5,18 +5,22 @@ import React, {
     View,
     ScrollView,
     BackAndroid,
+    ToastAndroid,
+    StyleSheet
 } from 'react-native';
 
-import Toolbar from './Toolbar';
-import PluginSelector from './PluginSelector';
-import PluginList from './PluginList';
+var Icon = require('react-native-vector-icons/Ionicons');
 
-class AppIndex extends Component {
+import PluginList from './PluginList';
+import PLUGINS from './plugins';
+
+export default class extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            currentRoute: {}
-        }
+        this.state = { currentRoute: { name: 'index' } };
+    }
+
+    componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', () => this.goBack());
     }
 
@@ -29,57 +33,63 @@ class AppIndex extends Component {
         return false;
     }
 
-    navigateToPlugin(plugin) {
-        let nav = this.navigator;
-        nav && nav.push({ name: 'plugin', plugin });
-    }
-
     router(route, nav) {
-        let RouteComponent = '';
+        let routeComponent = (
+            <PluginList
+                onSelectPlugin={(plugin) => nav.push({ name: 'plugin', plugin }) }
+                pluginList={PLUGINS.map((plugin) => { return { id: plugin.id, name: plugin.name } }) }
+                />
+        );
+
         if (route.name === 'plugin') {
-            let Plugin = route.plugin.module;
-            RouteComponent = (<Plugin></Plugin>);
-        } else {
-            RouteComponent = (<PluginSelector onSelect={this.navigateToPlugin.bind(this) }></PluginSelector>);
+            let list = PLUGINS.filter(({id}) => id === route.plugin.id);
+            if (list.length !== 1) {
+                ToastAndroid.show(`Could not find plugin ${pluginId}. \nIs it installed, has a corresponding file in ./app/plugins, and mentioned in package.json ? `, ToastAndroid.LONG);
+            } else {
+                let Plugin = list[0].module;
+                routeComponent = (<Plugin></Plugin>);
+            }
         }
+
         return (
             <ScrollView style={{ marginTop: 56 }}>
-                {RouteComponent}
+                {routeComponent}
             </ScrollView>
         );
     }
 
-    handleToolbarIcon(type) {
-        this.navigator.resetTo({ name: 'index' });
-    }
-
     render() {
-        let initialRoute = { name: 'index' };
         if (typeof this.props.plugin === 'string') {
-            initialRoute = { name: 'plugin', plugin: PluginList.findById(this.props.plugin) }
+            this.setState({ currentRoute: { name: 'plugin', plugin: this.props.plugin } });
         }
         return (
             <Navigator
-                initialRoute={initialRoute}
+                initialRoute={this.state.currentRoute}
                 configureScene={() => Navigator.SceneConfigs.HorizontalSwipeJump}
                 renderScene={(route, nav) => this.router(route, nav) }
-                ref = {(navigator) => {
-                    this.navigator = navigator;
-                } }
-                onWillFocus={(route) => {
-                    this.setState({
-                        currentRoute: route
-                    });
-                } }
+                ref = {navigator => this.navigator = navigator}
+                onWillFocus={route => { this.setState({ currentRoute: route }); } }
                 navigationBar={
-                    <Toolbar
-                        currentRoute={this.state.currentRoute}
-                        onIconClicked={this.handleToolbarIcon.bind(this) }>
-                    </Toolbar>
+                    <Icon.ToolbarAndroid
+                        style={styles.toolbar}
+                        title={this.state.currentRoute.name}
+                        titleColor="white"
+                        navIconName={this.state.currentRoute.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
+                        onIconClicked={() => this.navigator.resetTo({ name: 'index' }) }
+                        />
                 }
                 />
         );
     }
 }
 
-export default AppIndex;
+var styles = StyleSheet.create({
+    toolbar: {
+        backgroundColor: '#673ab7',
+        height: 50,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+    }
+});

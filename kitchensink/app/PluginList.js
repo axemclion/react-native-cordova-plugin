@@ -51,7 +51,8 @@ const DEFAULT_ICONS = {
     'cordova-plugin-device': 'android-phone-portrait',
     'cordova-plugin-network-information': 'network',
     'ionic-plugin-keyboard': 'key',
-    'cordova-plugin-statusbar': 'minus-round'
+    'cordova-plugin-statusbar': 'minus-round',
+    'cordova-plugin-globalization' : 'android-globe'
 };
 
 var styles = StyleSheet.create({

@@ -26,18 +26,25 @@ function getConnectionType(type) {
 export default class NetworkInformation extends Component {
     constructor(props) {
         super(props);
-        this.state = { message: '' }
+        this.state = { message: '' , event: null};
+        this.handlers = [];
     }
 
     componentDidMount() {
         this.setState({ message: 'Network Connection Type: ' + getConnectionType(Cordova.navigator.connection.type) });
+        this.handlers.push(Cordova.addEventListener('offline', () => this.setState({event: 'Offline event triggered'})));
+        this.handlers.push(Cordova.addEventListener('online', () => this.setState({event:  'Online event triggered'})));
     }
 
+    componentWillUnmount() {
+        this.handlers.forEach(handler => handler.remove());
+    }
+    
     render() {
         return (
             <View style={styles.container}>
                 <Text>This plugin runs on start, so this information is already populated in the Cordova.navigator.connection object</Text>
-                <Console message={this.state.message}/>
+                <Console message={this.state}/>
             </View>
         )
     }

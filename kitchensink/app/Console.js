@@ -30,8 +30,10 @@ function renderKeyValue(k, v) {
         case 'undefined':
             result = (<Text style={styles.special}>UNDEFINED</Text>);
             break;
-        case 'number':
         case 'boolean':
+            result = (<Text style={styles.special}>{v? 'True' : 'False'}</Text>);
+            break;
+        case 'number':
         case 'string':
         case 'undefined':
         default:

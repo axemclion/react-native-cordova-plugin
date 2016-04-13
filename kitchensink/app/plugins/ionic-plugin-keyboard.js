@@ -15,56 +15,63 @@ export default class extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            event: null,
-            isKeyboardOn: false
+            event: 'Unsubscribed from events',
+            isKeyboardOn: false,
+            eventSubscription: false
         };
         this.handlers = [];
     }
     
-    componentDidMount() {
-        this.handlers.push(Cordova.addEventListener('native.keyboardshow', e => this.keyboardEvent(true, e)));
-        this.handlers.push(Cordova.addEventListener('native.keyboardhide', e => this.keyboardEvent(false, e)));
-    }
-    
     componentWillUnmount() {
-        this.handlers.forEach(handler => handler.remove());
+        this.setEventSubscription(false);
     }
     
     keyboardEvent(isKeyboardOn, eventData){
         this.setState({
             isKeyboardOn,
             event: {
-                eventName: isKeyboardOn  ? 'Keyboard Show' : 'Keyboard Close',
+                eventName: isKeyboardOn  ? 'native.keyboardshow' : 'native.keyboardhide',
                 eventData
             }
         });
     }
     
     setKeyboard(isKeyboardOn) {
-        if (isKeyboardOn) {
-            Cordova.cordova.plugins.Keyboard.show();
-        } else {
-            Cordova.cordova.plugins.Keyboard.close();
-        }
+        Cordova.cordova.plugins.Keyboard[isKeyboardOn ? 'show' : 'close']();
         this.setState({ isKeyboardOn });
+    }
+
+    setEventSubscription(eventSubscription){
+        this.setState({eventSubscription});
+        if (eventSubscription){
+            this.handlers.push(Cordova.addEventListener('native.keyboardshow', e => this.keyboardEvent(true, e)));
+            this.handlers.push(Cordova.addEventListener('native.keyboardhide', e => this.keyboardEvent(false, e)));
+        } else {
+            this.handlers.forEach(handler => handler.remove());
+            this.setState({event: 'Unsubscribed from events'})
+            this.handlers = [];
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.titleText}>
-                    Ionic Keyboard Plugin
-                </Text>
-                <Switch style={styles.switch}
-                    onValueChange={isKeyboardOn => this.setKeyboard(isKeyboardOn) }
-                    value = {this.state.isKeyboardOn}
-                    />
-                <Text style={styles.subtitle}>
-                    Keyboard is currently {this.state.isKeyboardOn ? 'SHOWN' : 'HIDDEN'}
-                </Text>
-                <Console message={this.state.event}/>
-                <TextInput placeholder="Click here to open keyboard"/>
-
+                <View style={styles.switchContainer}>
+                    <Text>Use the switch to toggle the keyboard</Text>
+                    <Switch style={styles.switch}
+                        onValueChange={this.setKeyboard.bind(this)}
+                        value = {this.state.isKeyboardOn}
+                        />
+                </View>
+                <View style={styles.switchContainer}>
+                    <Text>Subscribe to event</Text>
+                    <Switch style={styles.switch}
+                        onValueChange={this.setEventSubscription.bind(this) }
+                        value = {this.state.eventSubscription}
+                        />
+                </View>
+                <Console message={this.state}/>
+                <TextInput placeholder="Start typing here to open keyboard"/>
             </View>
         )
     }
@@ -74,16 +81,10 @@ var styles = StyleSheet.create({
     container: {
         margin: 10
     },
-    switch: {
-
-    },
-    titleText: {
-        fontSize: 20,
-        fontWeight: '500',
-        textAlign: 'center',
-        marginBottom: 20
-    },
-    subtitle: {
-        textAlign: 'center'
+    switchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: 10,
+        marginTop: 20
     }
 });

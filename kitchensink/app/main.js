@@ -14,10 +14,19 @@ var Icon = require('react-native-vector-icons/Ionicons');
 import PluginList from './PluginList';
 import PLUGINS from './plugins';
 
+function getPluginById(pluginId) {
+    var list = PLUGINS.filter(({id}) => id === pluginId);
+    if (list.length === 1) {
+        return list[0];
+    }
+}
+
 export default class extends Component {
     constructor(props) {
         super(props);
-        this.state = { currentRoute: { name: 'index' } };
+        this.state = {
+            route: { name: props.pluginId ? 'plugin' : 'index', pluginId: props.pluginId }
+        };
     }
 
     componentDidMount() {
@@ -36,18 +45,18 @@ export default class extends Component {
     router(route, nav) {
         let routeComponent = (
             <PluginList
-                onSelectPlugin={(plugin) => nav.push({ name: 'plugin', plugin }) }
+                onSelectPlugin={(pluginId) => nav.push({ name: 'plugin', pluginId }) }
                 pluginList={PLUGINS.map((plugin) => { return { id: plugin.id, name: plugin.name } }) }
                 />
         );
 
         if (route.name === 'plugin') {
-            let list = PLUGINS.filter(({id}) => id === route.plugin.id);
-            if (list.length !== 1) {
-                ToastAndroid.show(`Could not find plugin ${pluginId}. \nIs it installed, has a corresponding file in ./app/plugins, and mentioned in package.json ? `, ToastAndroid.LONG);
-            } else {
-                let Plugin = list[0].module;
+            let plugin = getPluginById(route.pluginId);
+            if (plugin) {
+                let Plugin = plugin.module;
                 routeComponent = (<Plugin></Plugin>);
+            } else {
+                ToastAndroid.show(`Could not find plugin ${pluginId}. \nIs it installed, has a corresponding file in ./app/plugins, and mentioned in package.json ? `, ToastAndroid.LONG);
             }
         }
 
@@ -59,22 +68,19 @@ export default class extends Component {
     }
 
     render() {
-        if (typeof this.props.plugin === 'string') {
-            this.setState({ currentRoute: { name: 'plugin', plugin: this.props.plugin } });
-        }
         return (
             <Navigator
-                initialRoute={this.state.currentRoute}
+                initialRoute={this.state.route}
                 configureScene={() => Navigator.SceneConfigs.HorizontalSwipeJump}
                 renderScene={(route, nav) => this.router(route, nav) }
                 ref = {navigator => this.navigator = navigator}
-                onWillFocus={route => { this.setState({ currentRoute: route }); } }
+                onWillFocus={route => { this.setState({ route }); } }
                 navigationBar={
                     <Icon.ToolbarAndroid
                         style={styles.toolbar}
-                        title={this.state.currentRoute.name !== 'index' ? this.state.currentRoute.plugin.name + ' Plugin' : 'Cordova plugins for ReactNative'}
+                        title={this.state.route.name === 'index' ? 'Plugins' : getPluginById(this.state.route.pluginId).name + ' Plugin'}
                         titleColor="white"
-                        navIconName={this.state.currentRoute.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
+                        navIconName={this.state.route.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
                         onIconClicked={() => this.navigator.resetTo({ name: 'index' }) }
                         />
                 }

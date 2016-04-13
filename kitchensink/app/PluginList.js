@@ -13,7 +13,7 @@ export default class extends Component {
     renderRow(plugin) {
         return (
             <View>
-                <TouchableHighlight onPress={e => this.props.onSelectPlugin(plugin) }>
+                <TouchableHighlight onPress={e => this.props.onSelectPlugin(plugin.id) }>
                     <View style={styles.row}>
                         <View style={styles.iconContent}>
                             <Icon name={DEFAULT_ICONS[plugin.id] || 'android-' + plugin.name.toLowerCase() } size={20} style={styles.icon}/>
@@ -49,7 +49,8 @@ export default class extends Component {
 const DEFAULT_ICONS = {
     'cordova-plugin-dialogs': 'ios-list',
     'cordova-plugin-device': 'android-phone-portrait',
-    'cordova-plugin-network-information': 'network'
+    'cordova-plugin-network-information': 'network',
+    'ionic-plugin-keyboard': 'key'
 };
 
 var styles = StyleSheet.create({

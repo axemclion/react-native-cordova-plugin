@@ -28,7 +28,7 @@ function renderKeyValue(k, v) {
             result = (<Text style={styles.special}>NULL</Text>);
             break;
         case 'undefined':
-            result = (<Text style={styles.special}>UNDEFINED'</Text>);
+            result = (<Text style={styles.special}>UNDEFINED</Text>);
             break;
         case 'number':
         case 'boolean':

@@ -72,7 +72,7 @@ export default class extends Component {
                 navigationBar={
                     <Icon.ToolbarAndroid
                         style={styles.toolbar}
-                        title={this.state.currentRoute.name}
+                        title={this.state.currentRoute.name !== 'index' ? this.state.currentRoute.plugin.name + ' Plugin' : 'Cordova plugins for ReactNative'}
                         titleColor="white"
                         navIconName={this.state.currentRoute.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
                         onIconClicked={() => this.navigator.resetTo({ name: 'index' }) }
@@ -86,10 +86,11 @@ export default class extends Component {
 var styles = StyleSheet.create({
     toolbar: {
         backgroundColor: '#673ab7',
-        height: 50,
+        height: 56,
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
+        alignItems: 'center'
     }
 });

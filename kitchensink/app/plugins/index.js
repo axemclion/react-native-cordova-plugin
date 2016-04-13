@@ -6,7 +6,8 @@ const PLUGINS = [
     { id: 'cordova-plugin-network-information', name: 'Network Information', module: require('./cordova-plugin-network-information').default },
     { id: 'ionic-plugin-keyboard', name: 'Ionic Keyboard', module: require('./ionic-plugin-keyboard').default },
     { id: 'cordova-plugin-statusbar', name: 'Statusbar', module: require('./cordova-plugin-statusbar').default },
-    { id: 'cordova-plugin-globalization', name: 'Globalization', module: require('./cordova-plugin-globalization').default }
+    { id: 'cordova-plugin-globalization', name: 'Globalization', module: require('./cordova-plugin-globalization').default },
+    { id: 'phonegap-plugin-barcodescanner', name: 'Barcode scanner', module: require('./phonegap-plugin-barcodescanner').default}
 ];
 
 export default PLUGINS;

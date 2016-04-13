@@ -52,7 +52,8 @@ const DEFAULT_ICONS = {
     'cordova-plugin-network-information': 'network',
     'ionic-plugin-keyboard': 'key',
     'cordova-plugin-statusbar': 'minus-round',
-    'cordova-plugin-globalization' : 'android-globe'
+    'cordova-plugin-globalization' : 'android-globe',
+    'phonegap-plugin-barcodescanner': 'ios-barcode'
 };
 
 var styles = StyleSheet.create({

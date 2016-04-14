@@ -10,3 +10,16 @@
 
 1. Add the plugin UI/React Component in `./app/plugins`, with the same name as the plugin id. 
 2. Add the plugin as a object (with version) in the `plugins` key in `package.json`
+
+### Plugins to be added
+
+Here are some of the plugins that are planned to be added to the example. 
+
+- cordova-plugin-screen-orientation
+- de.appplant.cordova.plugin.local-notification
+- cordova-plugin-vibration
+- cordova-plugin-battery-status 
+- cordova-plugin-media
+- cordova-plugin-media-capture
+- cordova-plugin-device-motion
+- cordova-plugin-x-socialsharing

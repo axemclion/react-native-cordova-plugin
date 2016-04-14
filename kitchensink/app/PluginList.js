@@ -53,7 +53,8 @@ const DEFAULT_ICONS = {
     'ionic-plugin-keyboard': 'key',
     'cordova-plugin-statusbar': 'minus-round',
     'cordova-plugin-globalization' : 'android-globe',
-    'phonegap-plugin-barcodescanner': 'ios-barcode'
+    'phonegap-plugin-barcodescanner': 'ios-barcode',
+    'cordova-plugin-device-motion': 'speedometer'
 };
 
 var styles = StyleSheet.create({

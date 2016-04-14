@@ -119,6 +119,12 @@ Cordova.addEventListener('offline', onEvent);
 
 There are more examples of using the plugins in the [examples](https://github.com/axemclion/react-native-cordova-plugin/blob/examples/) branch - look for files with plugin names. 
 
+## Older Versions
+To run this plugin for older versions of ReactNative, use older versions published on npm
+
+- 0.14 to 0.17: react-native-cordova-plugin@0.0.9
+- 0.18 and above: Latest published on npm
+
 ## Troubleshooting
 
 Some JavaScript errors may be caused due to the way `cordova.js` is generated. You can try tto re-generate `cordova.js` using

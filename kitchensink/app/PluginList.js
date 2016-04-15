@@ -52,9 +52,10 @@ const DEFAULT_ICONS = {
     'cordova-plugin-network-information': 'network',
     'ionic-plugin-keyboard': 'key',
     'cordova-plugin-statusbar': 'minus-round',
-    'cordova-plugin-globalization' : 'android-globe',
+    'cordova-plugin-globalization': 'android-globe',
     'phonegap-plugin-barcodescanner': 'ios-barcode',
-    'cordova-plugin-device-motion': 'speedometer'
+    'cordova-plugin-device-motion': 'speedometer',
+    'cordova-plugin-media-capture': 'ios-film'
 };
 
 var styles = StyleSheet.create({

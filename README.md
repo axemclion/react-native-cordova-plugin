@@ -27,7 +27,7 @@ You can also check out the [example project](https://github.com/axemclion/react-
 First, Install this native module in your ReactNative project by running the following at the root of your ReactNative Project. 
 
 ```
-npm install raect-native-cordova-plugin --save
+npm install react-native-cordova-plugin --save
 ```
 
 ### Step 1 - Setup the ReactNative project

@@ -24,7 +24,7 @@ You can also check out the [example project](https://github.com/axemclion/react-
 
 ### Step 0 - Getting Started
 
-First, Install this native module in your ReactNative project by running the following at the root of your ReactNative Project. 
+First, Install this native module in your ReactNative project by running the following at the root of your ReactNative Project.
 
 ```
 npm install react-native-cordova-plugin --save
@@ -93,31 +93,31 @@ public class MainActivity extends ReactActivity {
 To install a plugin, say the `cordova-plugin-camera` and `cordova-plugin-contacts`, run the following command from the root of your ReactNative project
 
 ```bash
-$ node_modules/.bin/react-native-cordova-plugin add cordova-plugin-camera cordova-plugin-contacts
+$ node_modules/.bin/cordova-plugin add cordova-plugin-camera cordova-plugin-contacts
 ```
 
-The __add__ command takes one of more Cordova plugins that can be added to the project. To remove a plugin, use 
+The __add__ command takes one of more Cordova plugins that can be added to the project. To remove a plugin, use
 ```bash
-$ node_modules/.bin/react-native-cordova-plugin rm cordova-plugin-contacts
+$ node_modules/.bin/cordova-plugin rm cordova-plugin-contacts
 ```
 
 ### Step 4 - Using the Plugins
-In either __index.android.js__ or any other component, simply require this module using 
+In either __index.android.js__ or any other component, simply require this module using
 
 ```javascript
 var Cordova = require('react-native-cordova-plugin');
 ```
 
-In Cordova, all plugin methods are available on the `window` object. ReactNative does not run in a WebView and does not have a `window` object. Thus, all the methods and constants that a Cordova plugin defines are available in the `Cordova` object that was just required using the statement above. 
+In Cordova, all plugin methods are available on the `window` object. ReactNative does not run in a WebView and does not have a `window` object. Thus, all the methods and constants that a Cordova plugin defines are available in the `Cordova` object that was just required using the statement above.
 
 ```javascript
-Cordova.navigator.camera.getPicture(onSuccess, onFail, {sourceType: Cordova.Camera.PictureSourceType.SAVEDPHOTOALBUM)}); 
+Cordova.navigator.camera.getPicture(onSuccess, onFail, {sourceType: Cordova.Camera.PictureSourceType.SAVEDPHOTOALBUM)});
 
 // Listen to cordova-plugin-network-information plugin's events
 Cordova.addEventListener('offline', onEvent);
 ```
 
-There are more examples of using the plugins in the [examples](https://github.com/axemclion/react-native-cordova-plugin/blob/examples/) branch - look for files with plugin names. 
+There are more examples of using the plugins in the [examples](https://github.com/axemclion/react-native-cordova-plugin/blob/examples/) branch - look for files with plugin names.
 
 ## Older Versions
 To run this plugin for older versions of ReactNative, use older versions published on npm
@@ -125,17 +125,19 @@ To run this plugin for older versions of ReactNative, use older versions publish
 - 0.14 to 0.17: react-native-cordova-plugin@0.0.9
 - 0.18 and above: Latest published on npm
 
+To use CLI commands with react-native-cordova-plugin versions less than 1.0.0, replace `$ node_modules/.bin/cordova-plugin` with `$ node_modules/.bin/react-native-cordova-plugin`.
+
 ## Troubleshooting
 
 Some JavaScript errors may be caused due to the way `cordova.js` is generated. You can try tto re-generate `cordova.js` using
 
 ```bash
-$ node_modules/.bin/react-native-cordova-plugin repair
+$ node_modules/.bin/cordova-plugin repair
 ```
 
 If that does not work, try cleaning all the cordova plugins using the following, and then add the plugins again
 ```bash
-$ node_modules/.bin/react-native-cordova-plugin clean
+$ node_modules/.bin/cordova-plugin clean
 ```
 
-If none of these work, please open an issue with a prefix __[QUESTION]__ in the title, and I could try helping you. It would help to open the issue with a reduced way to reproduce the error. 
+If none of these work, please open an issue with a prefix __[QUESTION]__ in the title, and I could try helping you. It would help to open the issue with a reduced way to reproduce the error.

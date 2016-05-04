@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply from: "$projectDir/../../platforms/android/plugin-build.gradle"
+
 
 android {
     compileSdkVersion 23

@@ -10,7 +10,7 @@ var glob = require('glob');
 var CONFIG_XML = "<?xml version='1.0' encoding='utf-8'?><widget xmlns='http://www.w3.org/ns/widgets' xmlns:cdv='http://cordova.apache.org/ns/1.0'></widget>";
 var STRING_XML = '<?xml version="1.0" encoding="UTF-8"?><resources></resources>';
 var ANDROID_MANIFEST = "<?xml version='1.0' encoding='utf-8'?><manifest package='io.cordova.reactnative.cordovaplugin' xmlns:android='http://schemas.android.com/apk/res/android'></manifest>";
-
+var PLUGIN_GRADLE = "dependencies {compile fileTree(dir: 'libs', include: '*.jar')\n// SUB-PROJECT DEPENDENCIES START\n\n// SUB-PROJECT DEPENDENCIES END\n}\n// PLUGIN GRADLE EXTENSIONS START\n// PLUGIN GRADLE EXTENSIONS END";
 var PLATFORM_DIR = path.resolve(__dirname, '../platforms/android');
 
 cordova.events.on('verbose', console.log.bind(console));
@@ -20,19 +20,21 @@ function Android(projectRoot) {
     this.projectRoot = projectRoot;
 }
 
-Android.prototype.init = function() {
+Android.prototype.init = function () {
     if (this.isInitialized) {
         return;
     }
     createDirectories(['src', 'libs', 'res/xml', 'res/values', 'assets/www']);
     writeIfNotExists('res/xml/config.xml', CONFIG_XML);
     writeIfNotExists('res/values/strings.xml', STRING_XML);
+    writeIfNotExists('project.properties', '');
+    writeIfNotExists('plugin-build.gradle', PLUGIN_GRADLE);
     writeIfNotExists('AndroidManifest.xml', ANDROID_MANIFEST);
     console.log('Initialized Android resources');
 };
 
 function createDirectories(dirs) {
-    dirs.forEach(function(dir) {
+    dirs.forEach(function (dir) {
         mkdirp.sync(path.resolve(PLATFORM_DIR, dir));
     });
 }
@@ -48,31 +50,33 @@ function writeIfNotExists(filename, data) {
     }
 }
 
-Android.prototype.add = function(plugin) {
+Android.prototype.add = function (plugin) {
     this.init();
     var self = this;
     return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
         platformVersion: '5.0.0',
         //TODO - figure out a way to make cordova browserify only to selectively pick files
         browserify: false
-    }).then(function() {
+    }).then(function () {
         return generateCordovaJs(self.projectRoot);
+    }).then(function () {
+        return prepBuildFiles();
     });
 };
 
-Android.prototype.remove = function(plugin) {
+Android.prototype.remove = function (plugin) {
     var self = this;
     return cordova.plugman.raw.uninstall('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
         platformVersion: '5.0.0',
         browserify: false
-    }).then(function() {
+    }).then(function () {
         return generateCordovaJs(self.projectRoot);
     });
 };
 
-Android.prototype.clean = function() {
+Android.prototype.clean = function () {
     var projectRoot = this.projectRoot;
-    return Q().then(function() {
+    return Q().then(function () {
         rimraf.sync(PLATFORM_DIR);
         rimraf.sync(path.resolve(projectRoot, 'node_modules/android.json'));
         rimraf.sync(path.resolve(projectRoot, 'node_modules/fetch.json'));
@@ -80,12 +84,76 @@ Android.prototype.clean = function() {
     });
 };
 
-Android.prototype.repair = function() {
+Android.prototype.repair = function () {
     var self = this;
-    return Q().then(function() {
+    return Q().then(function () {
         return generateCordovaJs(self.projectRoot);
     });
 };
+
+// Based on https://github.com/apache/cordova-android/blob/d351e316bfb0d1d8800e6f51bc1e926aac295ab4/bin/templates/cordova/lib/builders/GradleBuilder.js#L67
+// Required to parse dependencies for Gradle that have been added in project.properties
+function prepBuildFiles(root) {
+    var propertiesObj = readProjectProperties(path.join(PLATFORM_DIR, 'project.properties'));
+    var subProjects = propertiesObj.libs;
+    // Update dependencies within build.gradle.
+    var buildGradle = fs.readFileSync(path.join(PLATFORM_DIR, 'plugin-build.gradle'), 'utf-8');
+    var depsList = '';
+    subProjects.forEach(function (p) {
+        var libName = p.replace(/[/\\]/g, ':').replace(name + '-', '');
+        depsList += 'debugCompile project(path: "' + libName + '", configuration: "debug")\n';
+        depsList += 'releaseCompile project(path: "' + libName + '", configuration: "release")\n';
+    });
+    // For why we do this mapping: https://issues.apache.org/jira/browse/CB-8390
+    var SYSTEM_LIBRARY_MAPPINGS = [
+        [/^\/?extras\/android\/support\/(.*)$/, 'com.android.support:support-$1:+'],
+        [/^\/?google\/google_play_services\/libproject\/google-play-services_lib\/?$/, 'com.google.android.gms:play-services:+']
+    ];
+    propertiesObj.systemLibs.forEach(function (p) {
+        var mavenRef;
+        // It's already in gradle form if it has two ':'s
+        if (/:.*:/.exec(p)) {
+            mavenRef = p;
+        } else {
+            for (var i = 0; i < SYSTEM_LIBRARY_MAPPINGS.length; ++i) {
+                var pair = SYSTEM_LIBRARY_MAPPINGS[i];
+                if (pair[0].exec(p)) {
+                    mavenRef = p.replace(pair[0], pair[1]);
+                    break;
+                }
+            }
+            if (!mavenRef) {
+                throw new error('Unsupported system library (does not work with gradle): ' + p);
+            }
+        }
+        depsList += 'compile "' + mavenRef + '"\n';
+    });
+    buildGradle = buildGradle.replace(/(SUB-PROJECT DEPENDENCIES START)[\s\S]*(\/\/ SUB-PROJECT DEPENDENCIES END)/, '$1\n' + depsList + '    $2');
+    var includeList = '';
+    propertiesObj.gradleIncludes.forEach(function (includePath) {
+        includeList += 'apply from: "$projectDir/../../platforms/android/' + includePath + '"\n';
+    });
+    buildGradle = buildGradle.replace(/(PLUGIN GRADLE EXTENSIONS START)[\s\S]*(\/\/ PLUGIN GRADLE EXTENSIONS END)/, '$1\n' + includeList + '$2');
+    fs.writeFileSync(path.join(PLATFORM_DIR, 'plugin-build.gradle'), buildGradle);
+}
+
+function readProjectProperties(propertyFile) {
+    function findAllUniq(data, r) {
+        var s = {};
+        var m;
+        while ((m = r.exec(data))) {
+            s[m[1]] = 1;
+        }
+        return Object.keys(s);
+    }
+
+    var data = fs.readFileSync(propertyFile, 'utf8');
+    return {
+        libs: findAllUniq(data, /^\s*android\.library\.reference\.\d+=(.*)(?:\s|$)/mg),
+        gradleIncludes: findAllUniq(data, /^\s*cordova\.gradle\.include\.\d+=(.*)(?:\s|$)/mg),
+        systemLibs: findAllUniq(data, /^\s*cordova\.system\.library\.\d+=(.*)(?:\s|$)/mg)
+    };
+}
 
 function findCordovaJSModule(projectRoot) {
     // Look for Cordova-js under ReactNative's node_modules
@@ -118,7 +186,7 @@ function generateCordovaJs(projectRoot) {
     var pluginsContent = glob.sync('**/*.js', {
         cwd: path.resolve(PLATFORM_DIR, 'platform_www'),
         realpath: true
-    }).map(function(filename) {
+    }).map(function (filename) {
         return fs.readFileSync(filename, 'utf-8');
     }).join('\n');
 
@@ -139,7 +207,7 @@ function generateCordovaJs(projectRoot) {
 };
 
 function loadModules(modules, location) {
-    return modules.map(function(module) {
+    return modules.map(function (module) {
         var fileContent = '';
         try {
             fileContent = fs.readFileSync(path.join(location, module + '.js'));

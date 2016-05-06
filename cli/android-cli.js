@@ -50,13 +50,27 @@ function writeIfNotExists(filename, data) {
     }
 }
 
-Android.prototype.add = function (plugin) {
+// takes an array or variables and turns them into an object to be consumed by plugman
+function mapVariablesToObject(variables) {
+  var plugmanConsumableVariables = {};
+  for (var i in variables) {
+    var t = variables[i].split('=');
+    if (t[0] && t[1]) {
+      plugmanConsumableVariables[t[0]] = t[1];
+    }
+  }
+  return plugmanConsumableVariables;
+}
+
+Android.prototype.add = function (plugin, variables) {
     this.init();
     var self = this;
+    var plugmanConsumableVariables = mapVariablesToObject(variables);
     return cordova.plugman.raw.install('android', PLATFORM_DIR, plugin, path.resolve(this.projectRoot, 'node_modules'), {
         platformVersion: '5.0.0',
         //TODO - figure out a way to make cordova browserify only to selectively pick files
-        browserify: false
+        browserify: false,
+        cli_variables: plugmanConsumableVariables
     }).then(function () {
         return generateCordovaJs(self.projectRoot);
     }).then(function () {

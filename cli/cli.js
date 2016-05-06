@@ -4,7 +4,7 @@ var argv = require('minimist')(process.argv.slice(2));
 var path = require('path');
 var Q = require('q');
 
-// TODO Check if this is a react-native project. 
+// TODO Check if this is a react-native project.
 var projectDir = '.';
 
 var Android = require('./android-cli');
@@ -12,11 +12,11 @@ var Android = require('./android-cli');
 var android = new Android(projectDir);
 
 var commands = {
-    add: function(plugins) {
+    add: function(plugins, variables) {
         console.log('Adding plugins %s', plugins.join());
         return plugins.map(function(pluginName) {
             return function() {
-                return android.add(pluginName);
+                return android.add(pluginName, variables);
             }
         }).reduce(Q.when, Q());
     },
@@ -54,8 +54,14 @@ switch (argv._[0]) {
         command = argv._[0];
 }
 
+var passedInVariables = argv['variable'];
+if (typeof passedInVariables === 'string') {
+  // set single variables to be an array
+  passedInVariables = [passedInVariables];
+}
+
 if (typeof commands[command] === 'function') {
-    commands[command](plugins).then(function() {
+    commands[command](plugins, passedInVariables).then(function() {
         console.log('Done with [%s] %s', command, plugins);
     }, function(err) {
         console.log('An error occured ===> \n', err);

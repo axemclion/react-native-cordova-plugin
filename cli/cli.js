@@ -65,6 +65,7 @@ if (typeof commands[command] === 'function') {
         console.log('Done with [%s] %s', command, plugins);
     }, function(err) {
         console.log('An error occured ===> \n', err);
+        console.log(err.stack || '');
     }).done();
 } else {
     console.log('Could not recognize command ', argv._[0]);

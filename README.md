@@ -96,6 +96,12 @@ To install a plugin, say the `cordova-plugin-camera` and `cordova-plugin-contact
 $ node_modules/.bin/cordova-plugin add cordova-plugin-camera cordova-plugin-contacts
 ```
 
+You can install plugins that require variables as well. Here we add the Cordova purchase plugin that handles In App Purchasing, supplying it the Billing Key of our Android application. You would replace the fake billing key (MIIBFJIEOF....) with your billing key (a very long string).
+
+```bash
+$ node_modules/.bin/cordova-plugin add cc.fovea.cordova.purchase --variable BILLING_KEY="MIIBFJIEOF...."
+```
+
 The __add__ command takes one of more Cordova plugins that can be added to the project. To remove a plugin, use
 ```bash
 $ node_modules/.bin/cordova-plugin rm cordova-plugin-contacts

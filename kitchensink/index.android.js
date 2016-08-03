@@ -1,12 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-
-import React, {
-    AppRegistry,
-    Component
-} from 'react-native';
+import React, {Component} from 'react';
+import {AppRegistry} from 'react-native';
 
 import AppIndex from './app/main';
 

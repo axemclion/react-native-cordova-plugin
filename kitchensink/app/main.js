@@ -1,6 +1,6 @@
-import React, {
+import React, {Component} from 'react';
+import {
     Navigator,
-    Component,
     Text,
     View,
     ScrollView,
@@ -76,11 +76,11 @@ export default class extends Component {
                 ref = {navigator => this.navigator = navigator}
                 onWillFocus={route => { this.setState({ route }); } }
                 navigationBar={
-                    <Icon.ToolbarAndroid
+                    <Icon.ToolbarAndroid 
                         style={styles.toolbar}
                         title={this.state.route.name === 'index' ? 'Plugins' : getPluginById(this.state.route.pluginId).name + ' Plugin'}
                         titleColor="white"
-                        navIconName={this.state.route.name === 'plugin' ? 'android-arrow-back' : 'android-menu'}
+                        navIconName={this.state.route.name === 'plugin' ? 'ios-backspace' : 'ios-menu'}
                         onIconClicked={() => this.navigator.resetTo({ name: 'index' }) }
                         />
                 }

@@ -1,5 +1,5 @@
-import React, {
-    Component,
+import React, {Component} from 'react';
+import {
     ListView,
     Text,
     View,
@@ -47,14 +47,17 @@ export default class extends Component {
 }
 
 const DEFAULT_ICONS = {
+    'cordova-plugin-camera' : 'ios-camera',
+    'cordova-plugin-contacts' : 'ios-contact',
     'cordova-plugin-dialogs': 'ios-list',
-    'cordova-plugin-device': 'android-phone-portrait',
-    'cordova-plugin-network-information': 'network',
-    'ionic-plugin-keyboard': 'key',
-    'cordova-plugin-statusbar': 'minus-round',
-    'cordova-plugin-globalization': 'android-globe',
+    'cordova-plugin-device': 'ios-phone-portrait',
+    'cordova-plugin-network-information': 'ios-wifi',
+    'ionic-plugin-keyboard': 'ios-keypad',
+    'cordova-plugin-statusbar': 'md-navigate',
+    'cordova-plugin-globalization': 'md-globe',
     'phonegap-plugin-barcodescanner': 'ios-barcode',
-    'cordova-plugin-device-motion': 'speedometer',
+    'cordova-plugin-device-motion': 'ios-speedometer',
+    'cordova-plugin-device-orientation': 'ios-compass-outline',
     'cordova-plugin-media-capture': 'ios-film'
 };
 

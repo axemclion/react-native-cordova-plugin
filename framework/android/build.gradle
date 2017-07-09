@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$projectDir/../../platforms/android/plugin-build.gradle"
+def pluginBuildPath = "$projectDir/../../platforms/android/plugin-build.gradle"
+def pluginBuildFile = new File(pluginBuildPath);
+if (pluginBuildFile.exists())
+    apply from: pluginBuildPath
 
 
 android {
